@@ -52,6 +52,8 @@ public class Usuario implements Serializable {
         this.id = id;
     }
 
+    
+    
     /**
      * @return the usuario
      */
