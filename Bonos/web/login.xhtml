@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Inicio de sesión</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <title>Iniciar sesión</title>        
+        <f:metadata>
+            <f:viewAction action="#{userManager.isLoggedInForwardHome()}" />
+        </f:metadata>
+    </h:head>
+    <body>
+        <h:form>
+            <p:panel>
+                <p:panelGrid columns="2">
+                    <p:outputLabel value="Usuario"/>
+                    <p:inputText />
+                    <p:outputLabel value="Contraseña"/>
+                    <p:password />
+                </p:panelGrid>
+                <p:commandButton value="Iniciar sesión"/>
+
+            </p:panel>
+        </h:form>
+    </body>
+</html>
