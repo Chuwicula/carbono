@@ -12,7 +12,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 
 /**
@@ -101,7 +101,7 @@ public class Operacion implements Serializable {
      * @return the id_contrato
      */
     @JoinColumn(name = "id_contrato")
-    @OneToMany(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     public Contratos getId_contrato() {
         return id_contrato;
     }
@@ -117,7 +117,7 @@ public class Operacion implements Serializable {
      * @return the id_tipo_operacion
      */
     @JoinColumn(name = "id_tipo_operacion")
-    @OneToMany(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     public Tipo_Operacion getId_tipo_operacion() {
         return id_tipo_operacion;
     }
@@ -133,7 +133,7 @@ public class Operacion implements Serializable {
      * @return the id_proyecto
      */
     @JoinColumn(name = "id_proyecto")
-    @OneToMany(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     public Proyecto getId_proyecto() {
         return id_proyecto;
     }

@@ -18,17 +18,21 @@ and open the template in the editor.
         </f:metadata>
     </h:head>
     <body>
-        <h:form>
-            <p:panel>
-                <p:panelGrid columns="2">
-                    <p:outputLabel value="Usuario"/>
-                    <p:inputText />
-                    <p:outputLabel value="Contraseña"/>
-                    <p:password />
-                </p:panelGrid>
-                <p:commandButton value="Iniciar sesión"/>
 
-            </p:panel>
-        </h:form>
+        <p:panel>
+            <h:form>
+                <p:panelGrid columns="2">
+                    <p:outputLabel value="Usuario" />
+                    <p:inputText value="#{userManager.userId}"/>
+                    <p:outputLabel value="Contraseña"/>
+                    <p:password value="#{userManager.userPassword}"/>
+                </p:panelGrid>
+                <p:commandButton value="Iniciar sesión" ajax="false" action="#{userManager.login()}" />
+            </h:form>
+            <p:messages id="messages" showDetail="true" closable="true">
+                <p:autoUpdate />
+            </p:messages>
+        </p:panel>
+
     </body>
 </html>

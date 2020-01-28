@@ -46,5 +46,14 @@ Contributor(s):
     <property name="hibernate.connection.url">jdbc:postgresql://localhost:5432/postgres</property>
     <property name="hibernate.connection.username">postgres</property>
     <property name="hibernate.connection.password">PSQL</property>
+    <property name="hibernate.show_sql">true</property>
+    <mapping class="com.bonos.entidades.Contratos"/>
+    <mapping class="com.bonos.entidades.Operacion"/>
+    <mapping class="com.bonos.entidades.Proyecto"/>
+    <mapping class="com.bonos.entidades.Resumen_VCU"/>
+    <mapping class="com.bonos.entidades.Roles"/>
+    <mapping class="com.bonos.entidades.Tercero"/>
+    <mapping class="com.bonos.entidades.Tipo_Operacion"/>
+    <mapping class="com.bonos.entidades.Usuario"/>
   </session-factory>
 </hibernate-configuration>

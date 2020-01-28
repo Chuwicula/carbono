@@ -6,9 +6,11 @@
 package com.bonos.entidades;
 
 import java.io.Serializable;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 /**
  *
@@ -22,6 +24,7 @@ public class Tercero implements Serializable {
     private String nit;
     private String telefono;
     private String correo;
+    private List<Contratos> contratos;
 
     public Tercero() {
 
@@ -100,6 +103,21 @@ public class Tercero implements Serializable {
      */
     public void setCorreo(String correo) {
         this.correo = correo;
+    }
+
+    /**
+     * @return the contratos
+     */
+    @OneToMany(mappedBy = "id_tercero")
+    public List<Contratos> getContratos() {
+        return contratos;
+    }
+
+    /**
+     * @param contratos the contratos to set
+     */
+    public void setContratos(List<Contratos> contratos) {
+        this.contratos = contratos;
     }
 
 }

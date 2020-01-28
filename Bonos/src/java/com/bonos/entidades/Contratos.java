@@ -7,11 +7,13 @@ package com.bonos.entidades;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -36,6 +38,8 @@ public class Contratos implements Serializable {
     private Proyecto id_proyecto;
     private Tercero id_tercero;
 
+    private List<Operacion> operaciones;
+    
     public Contratos() {
 
     }
@@ -151,8 +155,8 @@ public class Contratos implements Serializable {
     /**
      * @return the id_proyecto
      */
-    @JoinColumn(name = "id_proyecto")
-    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "contratos")
+    @ManyToOne(fetch = FetchType.LAZY)
     public Proyecto getId_proyecto() {
         return id_proyecto;
     }
@@ -168,7 +172,7 @@ public class Contratos implements Serializable {
      * @return the id_tercero
      */
     @JoinColumn(name = "id_tercero")
-    @OneToMany(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     public Tercero getId_tercero() {
         return id_tercero;
     }
@@ -178,5 +182,20 @@ public class Contratos implements Serializable {
      */
     public void setId_tercero(Tercero id_tercero) {
         this.id_tercero = id_tercero;
+    }
+
+    /**
+     * @return the operaciones
+     */
+    @OneToMany(mappedBy = "id_contrato")
+    public List<Operacion> getOperaciones() {
+        return operaciones;
+    }
+
+    /**
+     * @param operaciones the operaciones to set
+     */
+    public void setOperaciones(List<Operacion> operaciones) {
+        this.operaciones = operaciones;
     }
 }

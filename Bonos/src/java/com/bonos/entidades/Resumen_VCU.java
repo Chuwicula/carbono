@@ -11,6 +11,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 /**
@@ -112,7 +113,7 @@ public class Resumen_VCU implements Serializable {
      * @return the id_proyecto
      */
     @JoinColumn(name = "id_proyecto")
-    @OneToMany(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     public Proyecto getId_proyecto() {
         return id_proyecto;
     }

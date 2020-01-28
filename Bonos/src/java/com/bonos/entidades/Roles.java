@@ -1,9 +1,11 @@
 package com.bonos.entidades;
 
 import java.io.Serializable;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -12,6 +14,7 @@ public class Roles implements Serializable {
 
     private Integer id_rol;
     private String nombre_rol;
+    private List<Usuario> usuarios;
 
     public Roles() {
 
@@ -46,6 +49,21 @@ public class Roles implements Serializable {
      */
     public void setNombre_rol(String nombre_rol) {
         this.nombre_rol = nombre_rol;
+    }
+
+    /**
+     * @return the usuarios
+     */
+    @OneToMany(mappedBy = "id_rol")
+    public List<Usuario> getUsuarios() {
+        return usuarios;
+    }
+
+    /**
+     * @param usuarios the usuarios to set
+     */
+    public void setUsuarios(List<Usuario> usuarios) {
+        this.usuarios = usuarios;
     }
 
 }

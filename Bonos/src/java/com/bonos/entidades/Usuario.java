@@ -12,13 +12,23 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 
 /**
- * 
+ *
  *
  * @author Chuwi
  */
-@Entity
+@Entity()
+@NamedQueries({
+    @NamedQuery(name = "Usuario.findAll", query = "SELECT g FROM Usuario g")
+    ,
+    @NamedQuery(name = "Usuario.findMaxId", query = "SELECT max(g.id) FROM Usuario g")
+    ,
+    @NamedQuery(name = "Usuario.findByUsuario", query = "SELECT g FROM Usuario g WHERE g.usuario = :usuario"),})
+
 public class Usuario implements Serializable {
 
     //variable propias
@@ -52,8 +62,6 @@ public class Usuario implements Serializable {
         this.id = id;
     }
 
-    
-    
     /**
      * @return the usuario
      */
@@ -147,7 +155,6 @@ public class Usuario implements Serializable {
     /**
      * @return the id_rol
      */
-    
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_rol", nullable = false)
     public Roles getId_rol() {

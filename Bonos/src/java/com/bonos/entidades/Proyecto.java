@@ -6,12 +6,14 @@
 package com.bonos.entidades;
 
 import java.io.Serializable;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 /**
  *
@@ -23,6 +25,10 @@ public class Proyecto implements Serializable {
     private Integer id_proyecto;
     private String nombre;
     private Usuario id_usuario;
+
+    private List<Contratos> contratos;
+    private List<Operacion> operaciones;
+    private List<Resumen_VCU> resumenes;
 
     public Proyecto() {
 
@@ -73,6 +79,51 @@ public class Proyecto implements Serializable {
      */
     public void setId_usuario(Usuario id_usuario) {
         this.id_usuario = id_usuario;
+    }
+
+    /**
+     * @return the contratos
+     */
+    @OneToMany(mappedBy = "id_proyecto")
+    public List<Contratos> getContratos() {
+        return contratos;
+    }
+
+    /**
+     * @param contratos the contratos to set
+     */
+    public void setContratos(List<Contratos> contratos) {
+        this.contratos = contratos;
+    }
+
+    /**
+     * @return the operaciones
+     */
+    @OneToMany(mappedBy = "id_proyecto")
+    public List<Operacion> getOperaciones() {
+        return operaciones;
+    }
+
+    /**
+     * @param operaciones the operaciones to set
+     */
+    public void setOperaciones(List<Operacion> operaciones) {
+        this.operaciones = operaciones;
+    }
+
+    /**
+     * @return the resumenes
+     */
+    @OneToMany(mappedBy = "id_proyecto")
+    public List<Resumen_VCU> getResumenes() {
+        return resumenes;
+    }
+
+    /**
+     * @param resumenes the resumenes to set
+     */
+    public void setResumenes(List<Resumen_VCU> resumenes) {
+        this.resumenes = resumenes;
     }
 
 }
