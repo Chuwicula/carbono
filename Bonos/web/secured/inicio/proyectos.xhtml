@@ -4,12 +4,45 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
     <h:head>
-        <title>TODO supply a title</title>
-        
+        <title>Principal</title>
     </h:head>
     <body>
-        <div>TODO write content</div>
+        <h:form>
+            <ui:repeat value="#{ProyectosBean.proyectos}" var="proyecto">
+                <p:accordionPanel >
+
+
+                    <p:tab title="#{proyecto.nombre}" >
+                        <p:dataTable value="#{proyecto.resumenes}" var="resumen" sortBy="#{resumen.anio}">
+                            <p:column >
+                                <h:outputLabel value="#{resumen.anio}"/>
+                            </p:column>
+                            <p:column headerText="verificados">
+                                <h:outputText value="#{resumen.no_verificados}">
+                                    <f:convertNumber pattern="¤#,##0" currencySymbol="$" />
+                                </h:outputText>
+                            </p:column>
+                             <p:column headerText="Emitidos">
+                                <h:outputText value="#{resumen.no_emitidos}">
+                                    <f:convertNumber pattern="¤#,##0" currencySymbol="$" />
+                                </h:outputText>
+                            </p:column>
+                               <p:column headerText="Retirados">
+                                <h:outputText value="#{resumen.no_retirados}">
+                                    <f:convertNumber pattern="¤#,##0" currencySymbol="$" />
+                                </h:outputText>
+                            </p:column>
+
+                        </p:dataTable>
+
+                    </p:tab>
+
+                </p:accordionPanel>
+            </ui:repeat>
+        </h:form>
+
     </body>
 </html>
