@@ -13,6 +13,8 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 
 /**
@@ -20,6 +22,10 @@ import javax.persistence.OneToMany;
  * @author Chuwi
  */
 @Entity
+@NamedQueries({
+    @NamedQuery(name = "Proyecto.findAll", query = "SELECT DISTINCT c FROM Proyecto c LEFT JOIN FETCH c.resumenes e GROUP BY c,e"),
+    @NamedQuery(name = "Proyecto.findNextId", query = "SELECT COALESCE(MAX(c.id_proyecto) + 1,1) FROM Proyecto c"),
+   })
 public class Proyecto implements Serializable {
 
     private Integer id_proyecto;
@@ -28,7 +34,7 @@ public class Proyecto implements Serializable {
 
     private List<Contratos> contratos;
     private List<Operacion> operaciones;
-    private List<Resumen_VCU> resumenes;
+    private List<Resumen_VCU> Resumenes;
 
     public Proyecto() {
 
@@ -112,18 +118,18 @@ public class Proyecto implements Serializable {
     }
 
     /**
-     * @return the resumenes
+     * @return the Resumenes
      */
     @OneToMany(mappedBy = "id_proyecto")
     public List<Resumen_VCU> getResumenes() {
-        return resumenes;
+        return Resumenes;
     }
 
     /**
      * @param resumenes the resumenes to set
      */
     public void setResumenes(List<Resumen_VCU> resumenes) {
-        this.resumenes = resumenes;
+        this.Resumenes = resumenes;
     }
 
 }

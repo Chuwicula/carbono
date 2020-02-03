@@ -12,7 +12,6 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 
 /**
  *
@@ -67,7 +66,7 @@ public class Resumen_VCU implements Serializable {
     /**
      * @return the no_verificados
      */
-    @Column(name = "no_verificados")
+    @Column(name = "no_verificado")
     public Integer getNo_verificados() {
         return no_verificados;
     }
@@ -97,7 +96,7 @@ public class Resumen_VCU implements Serializable {
     /**
      * @return the no_retirados
      */
-    @Column(name = "no_retidaros")
+    @Column(name = "no_retirados")
     public Integer getNo_retirados() {
         return no_retirados;
     }

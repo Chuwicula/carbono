@@ -9,9 +9,19 @@ import org.hibernate.FlushMode;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import java.sql.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.hibernate.NonUniqueObjectException;
-import org.hibernate.Transaction;
+import org.hibernate.jdbc.Work;
 import utilidad.Utilidades;
+import java.util.Date;
+import org.hibernate.Hibernate;
+import org.hibernate.transform.Transformers;
 
 /**
  * Esta clase permite realizar las operaciones basicas en base de datos usando
@@ -23,7 +33,6 @@ public class EntityManager {
     private final String ruta;//Ruta de archivo de configuracion de hibernate.xml
     private Session session; // archivo de session de hibernate que permitira realizar todas las operaciones en base de datos
     private Connection con; //Conexión a la base de datos para realizar consultas a la base de datos
-    private Statement stmt; // Variable que contiene el comando SQL a ejecutar
     /*
      * Singleton
      */
@@ -57,52 +66,19 @@ public class EntityManager {
         return nuevaInstancia;
     }
 
+    //____________________________LECTURA__________________________________
     /**
-     * @param entity
-     * @param clase
+     * @param param
+     * @param nameQuery
      * @return boolean
      * @throws Exception
      */
-    public boolean save2(Object entity, String clase) throws Exception {
-        try {
-            abrirSession();
-            Transaction t = session.beginTransaction();
-            session.saveOrUpdate(clase, entity);
-            t.commit();
-            //session.flush();
-            return true;
-        } catch (NonUniqueObjectException e) {
-            System.out.println("?????????????????????????????????DUPLICADO *************/*/*/*/*/*/*/*/*/**/*/*/*/*/*/*/*/*/*/*/");
-            try {
-                abrirSession();
-                Object nuevo = session.merge(clase, entity);
-                session.saveOrUpdate(clase, nuevo);
-                session.getTransaction().commit();
-                //   session.flush();
-                System.out.println("Duplicado guardado");
-                return true;
-            } catch (Exception exec) {
-                System.out.println("NO SE PUDOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
-                //System.out.println(e.getMessage());
-                //System.out.println(exec.getMessage());
-                if (session.getTransaction().isActive()) {
-                    session.getTransaction().rollback();
-                }
-            }
-            return false;
-        } catch (Exception e) {
-            // e.getMessage();
-            session.getTransaction().rollback();
-            //Logger.getLogger(EntityManager.class.getName()).log(Level.SEVERE, null, e);
-            Utilidades.imprimir_msg("Error", "Error al ejecutar comando");
-            return false;
-        }
-    }
-
     public Object selectNameQueryParam(HashMap param, String nameQuery) throws Exception {
+        Object retorno = null;
         try {
             abrirSession();
             Query query = session.getNamedQuery(nameQuery);
+
             Iterator it = param.entrySet().iterator();
             while (it.hasNext()) {
                 Map.Entry e = (Map.Entry) it.next();
@@ -110,17 +86,227 @@ public class EntityManager {
             }
             query.setReadOnly(false);
             param.clear();
-            return query.uniqueResult();
+
+            retorno = query.uniqueResult();
         } catch (Exception e) {
             //Logger.getLogger(EntityManager.class.getName()).log(Level.SEVERE, null, e);
-            session.getTransaction().rollback();
+            if (session.getTransaction().isActive()) {
+                session.getTransaction().rollback();
+            }
             e.getMessage();
+            e.printStackTrace();
+            //session.clear();
         } finally {
-            //cerrarSession();
+            cerrarSession();
         }
-        return null;
+        return retorno;
     }
 
+    public void inicarObjecto(Object object) {
+        try {
+            abrirSession();
+            Hibernate.initialize(object);
+
+        } catch (Exception ex) {
+            Logger.getLogger(EntityManager.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            cerrarSession();
+        }
+    }
+
+    public Object selectNameQueryParamList(HashMap param, String nameQuery) throws Exception {
+        try {
+            abrirSession();
+            Query query = session.getNamedQuery(nameQuery);
+            if (param != null) {
+                Iterator it = param.entrySet().iterator();
+                while (it.hasNext()) {
+                    Map.Entry e = (Map.Entry) it.next();
+                    query.setParameter(e.getKey().toString(), e.getValue());
+                }
+            }
+            query.setReadOnly(false);
+
+            return query.list();
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            //System.out.println(ex.toString());
+            //ex.getMessage();
+            // session.getTransaction().rollback();
+            System.out.println("Exepcion entity Manager");
+            return null;
+        } finally {
+            cerrarSession();
+        }
+    }
+
+    public Object selectNameQueryUniqueResult(String nameQuery) throws Exception {
+        try {
+            abrirSession();
+            Query query = session.getNamedQuery(nameQuery);
+            query.setReadOnly(false);
+            return query.uniqueResult();
+        } catch (Exception e) {
+            session.getTransaction().rollback();
+            return null;
+        } finally {
+            cerrarSession();
+        }
+    }
+
+    public Object selectNameQueryParamListMultipleEst(HashMap param, String nameQuery) throws Exception {
+        try {
+            abrirSession();
+            Query query = session.getNamedQuery(nameQuery);
+            if (param != null) {
+                Iterator it = param.entrySet().iterator();
+                while (it.hasNext()) {
+                    Map.Entry e = (Map.Entry) it.next();
+                    query.setParameter(e.getKey().toString(), e.getValue());
+                }
+            }
+
+            query.setReadOnly(false);
+            return query.list();
+        } catch (Exception ex) {
+            session.getTransaction().rollback();
+            ex.getMessage();
+            return null;
+        } finally {
+            cerrarSession();
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public Object selectNativo(HashMap param, String sql) throws Exception {
+        try {
+
+            abrirSession();
+            Query query = session.createQuery(sql);
+            if (param != null) {
+                Iterator it = param.entrySet().iterator();
+                while (it.hasNext()) {
+                    Map.Entry e = (Map.Entry) it.next();
+                    query.setParameter(e.getKey().toString(), e.getValue());
+                }
+            }
+            query.setReadOnly(false);
+
+            return query.list();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            System.out.println("Exepcion entity Manager");
+            return null;
+        } finally {
+            cerrarSession();
+        }
+    }
+
+    //___________________________ESCRITURA_________________________________
+    //__________________________MODIFICACION_______________________________
+    //Metodo que recibe una entidad y su clase y realiza un insert o un update en
+    //la base de datos
+    public boolean save2(Object entity, String clase) throws Exception {
+        try {
+            abrirSession();
+            session.beginTransaction();
+            try {
+                System.out.println("Object Saved-*-*-*-*-*-**--*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*--**-*-*--*-*-*-");
+                session.saveOrUpdate(entity);
+                if (!session.getTransaction().wasCommitted()) {
+                    session.getTransaction().commit();
+                }
+            } catch (Exception e) {
+                //session.clear();
+                e.printStackTrace();
+                try {
+                    Object merged = session.merge(clase, entity);
+                    session.saveOrUpdate(merged);
+                    if (!session.getTransaction().wasCommitted()) {
+                        session.getTransaction().commit();
+                    }
+                    System.out.println("Object Merged +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+");
+                } catch (Exception ex) {
+                    if (session.getTransaction() != null && session.getTransaction().isActive()) {
+                        session.getTransaction().rollback();
+                    }
+                    Utilidades.imprimir_msg("Error", "Hubo inconsistencia en el guardado");
+                    ex.printStackTrace();
+                }
+            }
+            return true;
+        } catch (NonUniqueObjectException e) {
+            System.out.println("?????????????????????????????????DUPLICADO *************/*/*/*/*/*/*/*/*/**/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*");
+            try {
+                abrirSession();
+                Object nuevo = session.merge(clase, entity);
+                session.saveOrUpdate(clase, nuevo);
+                if (!session.getTransaction().wasCommitted()) {
+                    session.getTransaction().commit();
+                }
+                System.out.println("Duplicado guardado");
+                return true;
+            } catch (Exception exec) {
+                System.out.println("NO SE PUDOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
+                if (session.getTransaction().isActive()) {
+                    session.getTransaction().rollback();
+                }
+                e.printStackTrace();
+            }
+            return false;
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (session.getTransaction().isActive()) {
+                session.getTransaction().rollback();
+            }
+            Utilidades.imprimir_msg("Error", "Error al ejecutar comando");
+            return false;
+        } finally {
+            cerrarSession();
+        }
+    }
+
+    //METODO QUE ACTUALIZA LOS REGISTROS
+    public void update() {
+        try {
+            abrirSession();
+            session = transactionManager.getCurrentSession();
+            session.clear();//ACA SE HACE CONSULTA A LA BASE DE DATOS
+            if (session == null) {
+                System.out.println("Sesion Nula");
+            }
+            if (session.isOpen()) {
+                System.out.println("Sesion abierta");
+            }
+        } catch (Exception e) {
+            System.out.println("Error");
+        } finally {
+            cerrarSession();
+        }
+    }
+
+    //Metodo que actualiza un objeto, recibe como parametro el objeto y hace la
+    //actualizacion en la base de datos. 
+    public boolean actualizar(Object entity) {
+        try {
+            abrirSession();
+            session.beginTransaction();
+            session.merge(entity);
+            if (!session.getTransaction().wasCommitted()) {
+                session.getTransaction().commit();
+            }
+            System.out.println("Object Merged");
+        } catch (Exception e) {
+            e.printStackTrace();
+            Utilidades.imprimir_msg("Error", "No se pudieron guardar los datos");
+        } finally {
+            cerrarSession();
+        }
+        return false;
+    }
+
+    //___________________________ELIMINACION_______________________________
     /**
      *
      * @param entity
@@ -128,20 +314,34 @@ public class EntityManager {
      * @throws Exception
      */
     public boolean delete(Object entity) throws Exception {
+        abrirSession();
+        session.beginTransaction();
         try {
-            abrirSession();
-            session.beginTransaction();
+            System.out.println("Delete Object Initial");
             session.delete(entity);
             session.getTransaction().commit();
-            //session.flush();
             return true;
         } catch (Exception e) {
-            e.getMessage();
-            System.out.println(e.getMessage());
-            session.getTransaction().rollback();
-            return false;
+            try {
+                System.out.println("Delete Object Merged");
+                Object nuevo = session.merge(entity);
+                session.delete(nuevo);
+                session.getTransaction().commit();
+                return true;
+            } catch (Exception e2) {
+                System.out.println("Error in delete");
+                e.getMessage();
+                e.printStackTrace();
+                System.out.println(e.getMessage());
+                if (session.getTransaction().isActive()) {
+                    session.getTransaction().rollback();
+                }
+                //session.clear();
+                return false;
+            }
+
         } finally {
-            //cerrarSession();
+            cerrarSession();
         }
 
     }
@@ -168,7 +368,7 @@ public class EntityManager {
      *
      * @throws Exception
      */
-    private void abrirSession() throws Exception {
+    public void abrirSession() throws Exception {
         if (session != null && session.isOpen()) {
             return;
         }
@@ -187,68 +387,153 @@ public class EntityManager {
         if (session == null || !session.isOpen()) {
             return;
         }
-        //session.close();
+        session.close();
     }
 
-    public Object selectNameQueryParamList(HashMap param, String nameQuery) throws Exception {
+    public void SQLBulkQuery(String sentencia, List<String[]> param) {
         try {
-            abrirSession();
-            Query query = session.getNamedQuery(nameQuery);
-            if (param != null) {
-                Iterator it = param.entrySet().iterator();
-                while (it.hasNext()) {
-                    Map.Entry e = (Map.Entry) it.next();
-                    query.setParameter(e.getKey().toString(), e.getValue());
+            try {
+                session.beginTransaction();
+            } catch (Exception e) {
+                System.out.println("Sesion ya iniciada");
+            }
+            System.out.println("Cantidad -> " + param.size());
+            session.doWork(new Work() {
+                @Override
+                public void execute(Connection conn) throws SQLException {
+                    PreparedStatement pstmt = null;
+                    try {
+                        String consulta = "INSERT INTO t_ejecucion_presupuestal VALUES (?, ?, ?"
+                                + ", ?, ?, ?, ?, "
+                                + "?, ?, ?, ?, ?, ?) ";
+                        pstmt = conn.prepareStatement(consulta);
+                        int contador = 1;
+                        for (String[] name : param) {
+                            for (int i = 0; i < 13; i++) {
+                                if (i == 0) {
+                                    pstmt.setInt(i + 1, Integer.parseInt(name[i]));
+                                    System.out.println("->" + name[i]);
+                                } else if (i == 1) {
+                                    pstmt.setInt(i + 1, Integer.parseInt(name[i]));
+                                } else if (i == 2) {
+                                    pstmt.setInt(i + 1, Integer.parseInt(name[i]));
+                                } else if (i == 3) {
+                                    pstmt.setDouble(i + 1, Double.parseDouble(name[i]));
+                                } else if (i == 4) {
+                                    Date date1 = new Date();
+                                    try {
+                                        date1 = new SimpleDateFormat("yyyy/MM/dd").parse(name[i]);
+                                        System.out.println("****" + name[i] + "****");
+                                    } catch (ParseException ex) {
+                                        Logger.getLogger(EntityManager.class.getName()).log(Level.SEVERE, null, ex);
+                                    }
+                                    Instant instant = date1.toInstant();
+                                    ZoneId defaultZoneId = ZoneId.systemDefault();
+                                    LocalDate localDate = instant.atZone(defaultZoneId).toLocalDate();
+                                    pstmt.setDate(i + 1, java.sql.Date.valueOf(localDate));
+                                } else if (i >= 5) {
+                                    pstmt.setString(i + 1, name[i]);
+                                }
+
+                            }
+                            pstmt.addBatch();
+
+                            System.out.println(contador);
+                            contador++;
+                        }
+                        System.out.println("ejecutando.......................................");
+                        try {
+                            int[] val = pstmt.executeBatch();
+                            System.out.println("columnas afectadas " + val.length);
+                        } catch (SQLException e) {
+                            e.getNextException().printStackTrace();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    } finally {
+                        pstmt.close();
+                    }
                 }
             }
-            query.setReadOnly(false);
-            
-            return query.list();
-            
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            //System.out.println(ex.toString());
-            //ex.getMessage();
-           // session.getTransaction().rollback();
-            System.out.println("Exepcion entity Manager"); 
-           return null;
-        }
-    }
+            );
 
-    public Object selectNameQueryUniqueResult(String nameQuery) throws Exception {
-        try {
-            abrirSession();
-            Query query = session.getNamedQuery(nameQuery);
-            query.setReadOnly(false);
-            return query.uniqueResult();
+            if (!session.getTransaction()
+                    .wasCommitted()) {
+                session.getTransaction().commit();
+                System.out.println("Data subida");
+            }
+
         } catch (Exception e) {
+            e.printStackTrace();
             session.getTransaction().rollback();
-            return null;
         } finally {
-            // cerrarSession();
+            session.close();
         }
     }
 
-    public Object selectNameQueryParamListMultipleEst(HashMap param, String nameQuery) throws Exception {
+    public void SQLQuery(String sentencia, HashMap param) {
         try {
-            abrirSession();
-            Query query = session.getNamedQuery(nameQuery);
+            try {
+                session.beginTransaction();
+            } catch (Exception e) {
+                System.out.println("Sesion ya iniciada");
+            }
+            Query query = session.createSQLQuery(sentencia);
+
+            if (param != null) {
+                Iterator it = param.entrySet().iterator();
+                while (it.hasNext()) {
+                    Map.Entry e = (Map.Entry) it.next();
+                    //System.out.println("key: " + e.getKey().toString() + "\n" + "value: " + e.getValue());
+                    query.setParameter(e.getKey().toString(), e.getValue());
+                }
+            }
+            int rowCount = query.executeUpdate();
+
+            if (!session.getTransaction().wasCommitted()) {
+                session.getTransaction().commit();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            session.getTransaction().rollback();
+        } finally {
+            cerrarSession();
+        }
+    }
+
+    public void borrarHQL(String sentencia, HashMap param) {
+        try {
+            try {
+                session.beginTransaction();
+            } catch (Exception e) {
+                System.out.println("1");
+            }
+            Query query = session.createQuery(sentencia);
             if (param != null) {
                 Iterator it = param.entrySet().iterator();
                 while (it.hasNext()) {
                     Map.Entry e = (Map.Entry) it.next();
                     query.setParameter(e.getKey().toString(), e.getValue());
+                    System.out.println("key: " + e.getKey().toString() + "\n" + "value: " + e.getValue());
                 }
             }
-            query.setReadOnly(false);
-            return query.list();
-        } catch (Exception ex) {
-            session.getTransaction().rollback();
-            ex.getMessage();
-            return null;
+            int rowCount = query.executeUpdate();
+            if (rowCount == 0) {
+                System.out.println("no hubo Borrados");
+            } else {
+                System.out.println("si hubo borrados");
+            }
+            if (!session.getTransaction().wasCommitted()) {
+                session.getTransaction().commit();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
         } finally {
-            //cerrarSession();
+            cerrarSession();
         }
+
     }
 
     //Este  metodo permite cerrar la transacion entre la aplicacion y la base de datos
