@@ -84,9 +84,12 @@ public class UserManager implements Serializable {
     //Metodo que redirige a pagina  de inicio si el usuario sigue activo,
     //Evita que al cerrar las pestanias el usuario tenga que volver a iniciar sesion
     public String isLoggedInForwardHome() {
+        System.out.println("load forward");
         if (isLoggedIn()) {
+            System.out.println("Is logged");
             return HOME_PAGE_REDIRECT;
         }
+        System.out.println("Isn't logged :V");
         return null;
     }
 
@@ -104,8 +107,7 @@ public class UserManager implements Serializable {
     }
 
     public void aviso_Contra() {
-        PrimeFaces reqcontext = PrimeFaces.current();
-        reqcontext.executeScript("PF('ccDlg').show();");
+        System.out.println("hola");
     }
 
     //Metood que cambia la contrasenia de un usuario activo

@@ -8,7 +8,6 @@ package utilidad;
 import javax.faces.application.FacesMessage;
 import org.primefaces.PrimeFaces;
 
-import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -19,7 +18,6 @@ public class Utilidades {
     public static void imprimir_msg(String top, String msg) {
         PrimeFaces reqcontext = PrimeFaces.current();
         reqcontext.dialog().showMessageDynamic(new FacesMessage(top, msg));
-
     }
 
 }

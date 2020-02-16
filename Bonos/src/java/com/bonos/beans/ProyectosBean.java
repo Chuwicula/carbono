@@ -15,7 +15,7 @@ import javax.inject.Named;
 public class ProyectosBean implements Serializable {
 
     private List<Proyecto> proyectos;
-    
+
     EntityManager em = EntityManager.getInstance("hibernate.cfg.xml");
 
     @PostConstruct
@@ -23,6 +23,7 @@ public class ProyectosBean implements Serializable {
         try {
             //cargue todos los proyectos
             proyectos = (List<Proyecto>) em.selectNameQueryParamList(null, "Proyecto.findAll");
+            System.out.println("Tamano:" + proyectos.size());
         } catch (Exception ex) {
             Logger.getLogger(ProyectosBean.class.getName()).log(Level.SEVERE, null, ex);
         }
