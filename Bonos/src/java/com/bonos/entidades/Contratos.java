@@ -14,6 +14,8 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -24,6 +26,8 @@ import javax.persistence.Temporal;
  */
 @Entity
 @Table(name = "contratos")
+@NamedQueries({
+    @NamedQuery(name = "newIdContrato", query = "SELECT (CASE WHEN MAX(c.id_contrato) IS NULL THEN 1 ELSE (MAX(c.id_contrato) + 1) END) FROM Contratos c")})
 public class Contratos implements Serializable {
 
     //Variables Propias
@@ -39,7 +43,7 @@ public class Contratos implements Serializable {
     private Tercero id_tercero;
 
     private List<Operacion> operaciones;
-    
+
     public Contratos() {
 
     }

@@ -8,6 +8,30 @@
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 template="../../templates/modulos.xhtml">
     <ui:define name="content">
+        <h:form>
+            <p:dataTable value="#{constantesBean.terceros}" var="terceros">
+                <p:column headerText="Nombre Tercero">
+                    <h:outputLabel value="#{terceros.nombre}"/>
+                </p:column>
+            </p:dataTable>
+            <p:dataTable>
 
+            </p:dataTable>
+            <p:panelGrid columns="2">
+                <p:outputLabel value="Numero contrato: "/>
+                <p:inputText value="#{crearContratosBean.contratoNuevo.contrato_numero}"/>
+                <p:outputLabel value="Nombre: "/>
+                <p:inputText value="#{crearContratosBean.contratoNuevo.contrato_nombre}"/>
+                <p:outputLabel value="Precio venta VCU "/>
+                <p:inputNumber value="#{crearContratosBean.contratoNuevo.precio_venta}"/>
+                <p:outputLabel value="Numero VCUs "/>
+                <p:inputNumber value="#{crearContratosBean.contratoNuevo.valor_firmado}"/>
+                <p:outputLabel  value="Fecha firma"/>
+                <p:calendar value="#{crearContratosBean.contratoNuevo.fecha_inicio}"/>
+                <p:outputLabel  value="Fecha final"/>
+                <p:calendar value="#{crearContratosBean.contratoNuevo.fecha_fin}"/>
+                
+            </p:panelGrid>
+        </h:form>
     </ui:define>
 </ui:composition>

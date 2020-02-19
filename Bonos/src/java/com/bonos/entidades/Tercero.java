@@ -10,13 +10,23 @@ import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 /**
  *
  * @author Chuwi
  */
 @Entity
+
+@Table(name = "Tercero")
+@NamedQueries({
+    @NamedQuery(name = "newIdTercero", query = "SELECT CASE WHEN MAX(c.id_tercero) IS NULL THEN 1 ELSE (MAX(c.id_tercero) + 1) END FROM Tercero c")
+    ,
+@NamedQuery(name = "allTercero", query = "SELECT c FROM Tercero c")})
+
 public class Tercero implements Serializable {
 
     private Integer id_tercero;
