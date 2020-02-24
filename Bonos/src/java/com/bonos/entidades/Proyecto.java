@@ -23,6 +23,8 @@ import javax.persistence.OneToMany;
  */
 @Entity
 @NamedQueries({
+    
+    @NamedQuery(name = "Proyecto.findAllMin", query = "SELECT DISTINCT c FROM Proyecto c LEFT JOIN FETCH c.resumenes e GROUP BY c,e"),    
     @NamedQuery(name = "Proyecto.findAll", query = "SELECT DISTINCT c FROM Proyecto c LEFT JOIN FETCH c.resumenes e GROUP BY c,e"),
     @NamedQuery(name = "Proyecto.findNextId", query = "SELECT COALESCE(MAX(c.id_proyecto) + 1,1) FROM Proyecto c"),
    })

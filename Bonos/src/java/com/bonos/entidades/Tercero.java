@@ -21,7 +21,7 @@ import javax.persistence.Table;
  */
 @Entity
 
-@Table(name = "Tercero")
+@Table(name = "tercero")
 @NamedQueries({
     @NamedQuery(name = "newIdTercero", query = "SELECT CASE WHEN MAX(c.id_tercero) IS NULL THEN 1 ELSE (MAX(c.id_tercero) + 1) END FROM Tercero c")
     ,

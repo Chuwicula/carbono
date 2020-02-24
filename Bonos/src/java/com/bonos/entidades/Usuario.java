@@ -14,7 +14,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.Table;
 
 /**
  *
@@ -25,11 +24,12 @@ import javax.persistence.Table;
 @NamedQueries({
     @NamedQuery(name = "Usuario.findAll", query = "SELECT g FROM Usuario g")
     ,
-    @NamedQuery(name = "Usuario.findMaxId", query = "SELECT max(g.id) FROM Usuario g")
+    @NamedQuery(name = "Usuario.findMaxId", query = "SELECT (CASE WHEN MAX(c.id) IS NULL THEN 1 ELSE (MAX(c.id) + 1) END) FROM Usuario c")
     ,
     @NamedQuery(name = "Usuario.findByUsuario", query = "SELECT g FROM Usuario g WHERE g.usuario = :usuario"),})
 
 public class Usuario implements Serializable {
+    
 
     //variable propias
     private Integer id;

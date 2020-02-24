@@ -12,6 +12,9 @@
                 <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
                 <title>Bonos</title>
             </f:facet>
+            <f:metadata>
+                <f:viewAction action="#{userManager.isLoggedInForwardHome()}" />
+            </f:metadata>
             <h:outputStylesheet name="./css/default.css"/>
             <h:outputStylesheet name="./css/cssLayout.css"/>
             <h:outputStylesheet library="css" name="style.css"/>
@@ -22,10 +25,14 @@
                     <p:menubar>
                         <p:submenu label="Contratos">
                             <p:menuitem value="Todos" />
-                            <p:menuitem value="Crear contrato" action="#{userManager.redirect('contratos/crearContratos')}"/>
+                            <p:menuitem value="Crear contrato" action="#{userManager.redirect('contratos/crearContratos')}" ajax="false"/>
+                            <p:menuitem value="Crear Proyectos"  action="#{userManager.redirect('contratos/crearProyecto')}" ajax="false"/>
+                            <p:menuitem value="Crear terceros" action="#{userManager.redirect('contratos/crearTercero')}" ajax="false"/>
+                            <p:menuitem value="Crear Usuarios" action="#{userManager.redirect('contratos/crearUsuario')}" ajax="false"/>
+                            <p:menuitem value="Crear Roles" action="#{userManager.redirect('contratos/crearRol')}" ajax="false"/>
                         </p:submenu>
                         <p:submenu label="Markit">
-                            <p:menuitem value="Emititdos"/>
+                            <p:menuitem value="Emitidos" />
                             <p:menuitem value="Retirados" />
                             <p:menuitem value="Transferidos" />
                             <p:menuitem value="Resumen" />

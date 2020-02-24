@@ -17,6 +17,7 @@ public class TercerosFacade implements Serializable {
 
         try {
             tercero.setId_tercero(newTerceroId());
+            System.out.println("id " + tercero.getId_tercero());
             if (em.save2(tercero, "Tercero")) {
                 utilidad.Utilidades.imprimir_msg("Hecho", "Tercero Guardado");
             } else {

@@ -217,6 +217,7 @@ public class EntityManager {
                 if (!session.getTransaction().wasCommitted()) {
                     session.getTransaction().commit();
                 }
+                return true;
             } catch (Exception e) {
                 //session.clear();
                 e.printStackTrace();
@@ -227,15 +228,16 @@ public class EntityManager {
                         session.getTransaction().commit();
                     }
                     System.out.println("Object Merged +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+");
+                    return true;
                 } catch (Exception ex) {
                     if (session.getTransaction() != null && session.getTransaction().isActive()) {
                         session.getTransaction().rollback();
                     }
                     Utilidades.imprimir_msg("Error", "Hubo inconsistencia en el guardado");
                     ex.printStackTrace();
+                    return false;
                 }
             }
-            return true;
         } catch (NonUniqueObjectException e) {
             System.out.println("?????????????????????????????????DUPLICADO *************/*/*/*/*/*/*/*/*/**/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*");
             try {

@@ -41,6 +41,7 @@ public class Contratos implements Serializable {
 
     private Proyecto id_proyecto;
     private Tercero id_tercero;
+    private Monedas moneda_id;
 
     private List<Operacion> operaciones;
 
@@ -159,7 +160,7 @@ public class Contratos implements Serializable {
     /**
      * @return the id_proyecto
      */
-    @JoinColumn(name = "contratos")
+    @JoinColumn(name = "id_proyecto")
     @ManyToOne(fetch = FetchType.LAZY)
     public Proyecto getId_proyecto() {
         return id_proyecto;
@@ -201,5 +202,21 @@ public class Contratos implements Serializable {
      */
     public void setOperaciones(List<Operacion> operaciones) {
         this.operaciones = operaciones;
+    }
+
+    /**
+     * @return the moneda_id
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "moneda_id")
+    public Monedas getMoneda_id() {
+        return moneda_id;
+    }
+
+    /**
+     * @param moneda_id the moneda_id to set
+     */
+    public void setMoneda_id(Monedas moneda_id) {
+        this.moneda_id = moneda_id;
     }
 }

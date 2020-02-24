@@ -5,11 +5,17 @@ import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "roles")
+@NamedQueries({
+    @NamedQuery(name = "Roles.findAll", query = "SELECT g FROM Roles g")
+    ,
+    @NamedQuery(name = "Roles.findMaxId", query = "SELECT (CASE WHEN MAX(c.id_rol) IS NULL THEN 1 ELSE (MAX(c.id_rol) + 1) END) FROM Roles c"),})
 public class Roles implements Serializable {
 
     private Integer id_rol;

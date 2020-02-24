@@ -55,5 +55,6 @@ Contributor(s):
     <mapping class="com.bonos.entidades.Tercero"/>
     <mapping class="com.bonos.entidades.Tipo_Operacion"/>
     <mapping class="com.bonos.entidades.Usuario"/>
+    <mapping class="com.bonos.entidades.Monedas"/>
   </session-factory>
 </hibernate-configuration>

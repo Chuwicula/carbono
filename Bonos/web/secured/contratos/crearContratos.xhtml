@@ -9,14 +9,24 @@
                 template="../../templates/modulos.xhtml">
     <ui:define name="content">
         <h:form>
-            <p:dataTable value="#{constantesBean.terceros}" var="terceros">
-                <p:column headerText="Nombre Tercero">
-                    <h:outputLabel value="#{terceros.nombre}"/>
-                </p:column>
-            </p:dataTable>
-            <p:dataTable>
+            <p:panelGrid columns="3">
+                <p:dataTable value="#{constantesBean.terceros}" var="terceros" selectionMode="single" selection="#{crearContratosBean.tercero}" rowKey="#{terceros.id_tercero}">
 
-            </p:dataTable>
+                    <p:column headerText="Nombre Tercero">
+                        <h:outputLabel value="#{terceros.nombre}"/>
+                    </p:column>
+                </p:dataTable>
+                <p:dataTable value="#{constantesBean.proyectos}" var="proyecto" selectionMode="single" selection="#{crearContratosBean.proyecto}" rowKey="#{proyecto.id_proyecto}">
+                    <p:column headerText="Nombre proyecto">
+                        <h:outputLabel value="#{proyecto.nombre}"/>
+                    </p:column>
+                </p:dataTable>
+                <p:dataTable value="#{crearContratosBean.monedas}" var="moneda" selectionMode="single" selection="#{crearContratosBean.moneda}" rowKey="#{moneda.moneda_id}">
+                    <p:column headerText="Moneda">
+                        <p:outputLabel value="#{moneda.nombre}"/>
+                    </p:column>
+                </p:dataTable>
+            </p:panelGrid>
             <p:panelGrid columns="2">
                 <p:outputLabel value="Numero contrato: "/>
                 <p:inputText value="#{crearContratosBean.contratoNuevo.contrato_numero}"/>
@@ -30,8 +40,9 @@
                 <p:calendar value="#{crearContratosBean.contratoNuevo.fecha_inicio}"/>
                 <p:outputLabel  value="Fecha final"/>
                 <p:calendar value="#{crearContratosBean.contratoNuevo.fecha_fin}"/>
-                
+
             </p:panelGrid>
+            <p:commandButton value="Crear contrato" action="#{crearContratosBean.crearContratos()}"/>
         </h:form>
     </ui:define>
 </ui:composition>
