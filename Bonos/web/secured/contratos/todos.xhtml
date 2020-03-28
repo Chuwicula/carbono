@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="../../templates/modulos.xhtml">
+    <ui:define name="content">
+        <h:form id="detalle">
+            <p:tabView activeIndex="#{contratosBean.indice}">
+                <p:tab title="Contratos">
+                    <p:dataTable value="#{contratosBean.contratos}" var="contrato" selectionMode="single" rowKey="#{contrato.id_contrato}" selection="#{contratosBean.contratoSelect}">
+                        <p:ajax event="rowSelect" update="detalle" listener="#{contratosBean.cargarContrato()}"/>
+                        <p:column headerText="Numero">
+                            <p:outputLabel value="#{contrato.contrato_numero}"/>
+                        </p:column>
+                        <p:column headerText="Nombre">
+                            <p:outputLabel value="#{contrato.contrato_nombre}"/>
+                        </p:column>
+                    </p:dataTable>
+                </p:tab>
+                <p:tab title="Detalle" >
+                    <p:panelGrid columns="4">
+
+                        <p:outputLabel value="Nombre del contrato"/>
+                        <p:outputLabel value="#{contratosBean.contratoSelect.contrato_nombre}"/>
+                        <p:outputLabel value="Número de contrato"/>
+                        <p:outputLabel value="#{contratosBean.contratoSelect.contrato_numero}"/>
+                        <p:outputLabel value="Precio de venta"/>
+                        <p:outputLabel value="#{contratosBean.contratoSelect.precio_venta}"/>
+                        <p:outputLabel value="Moneda"/>
+                        <p:outputLabel value="Moneda"/>
+
+
+                    </p:panelGrid>
+
+                </p:tab>
+            </p:tabView>
+        </h:form>
+    </ui:define>
+</ui:composition>
